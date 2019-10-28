@@ -25,11 +25,11 @@ func main() {
 	}
 	server.OnConnect("/", func(s socketio.Conn) error {
 		s.SetContext("")
-		fmt.Println("connected:", s.ID())
+		log.Println("Connected:", s.ID())
 		return nil
 	})
 	server.OnEvent("/", "notice", func(s socketio.Conn, msg string) {
-		fmt.Println("notice:", msg)
+		log.Println("notice:", msg)
 		s.Emit("reply", "have "+msg)
 	})
 	server.OnEvent("/chat", "msg", func(s socketio.Conn, msg string) string {
@@ -43,10 +43,10 @@ func main() {
 		return last
 	})
 	server.OnError("/", func(e error) {
-		fmt.Println("meet error:", e)
+		log.Println("meet error:", e)
 	})
 	server.OnDisconnect("/", func(s socketio.Conn, msg string) {
-		fmt.Println("closed", msg)
+		log.Println("closed", msg)
 	})
 	go server.Serve()
 	defer server.Close()
