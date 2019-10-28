@@ -28,7 +28,7 @@ func main() {
 		log.Println("Connected:", s.ID())
 		return nil
 	})
-	server.OnEvent("/", "notice", func(s socketio.Conn, msg string) {
+	server.OnEvent("/", "name_event", func(s socketio.Conn, msg string) {
 		log.Println("notice:", msg)
 		s.Emit("reply", "have "+msg)
 	})
