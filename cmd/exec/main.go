@@ -50,9 +50,6 @@ func person(c *gin.Context) {
 func main() {
 	defer logFile.Close()
 
-	router.GET("/hello", hello)
-	router.GET("/test", test)
-	router.GET("/person/:name", person)
 	router.GET("/", func(c *gin.Context) {
 		socketServer.OnConnect("/socketio", func(s socketio.Conn) error {
 			s.SetContext("")
