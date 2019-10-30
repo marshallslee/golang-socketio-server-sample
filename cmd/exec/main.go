@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/googollee/go-socket.io"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
@@ -55,10 +54,9 @@ func main() {
 	go server.Serve()
 	defer server.Close()
 
-	router := mux.NewRouter()
-	router.HandleFunc("/hello", hello).Methods("GET")
-	router.Handle("/", server)
+	http.HandleFunc("/hello", hello)
+	http.Handle("/", server)
 
 	log.Println("Serving at localhost:12379...")
-	log.Fatal(http.ListenAndServe(":12379", router))
+	log.Fatal(http.ListenAndServe(":12379", nil))
 }
