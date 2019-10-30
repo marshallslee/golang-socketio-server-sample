@@ -67,8 +67,7 @@ func socketHandler(c *gin.Context) {
 		log.Println("closed", msg)
 	})
 
-	go socketServer.Serve()
-	defer socketServer.Close()
+	socketServer.ServeHTTP(c.Writer, c.Request)
 }
 
 func main() {
