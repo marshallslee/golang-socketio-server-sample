@@ -18,6 +18,7 @@ func hello(w http.ResponseWriter, r *http.Request) {
 }
 
 func name(w http.ResponseWriter, r *http.Request) {
+	log.Println("Name is called.")
 	if r.Method == "GET" {
 		if err := r.ParseForm(); err != nil {
 			log.Println(err.Error())
