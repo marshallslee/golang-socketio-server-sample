@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/googollee/go-socket.io"
 	"log"
+	"net/http"
 	"os"
 )
 
@@ -53,12 +54,13 @@ func main() {
 	router.GET("/hello", hello)
 	router.GET("/test", test)
 	router.GET("/person/:name", person)
-	router.GET("/socketio", wsHandler)
+	http.HandleFunc("/", wsHandler)
 
 	router.Run(":12379")
+	log.Fatal(http.ListenAndServe(":12379", nil))
 }
 
-func wsHandler(c *gin.Context) {
+func wsHandler(w http.ResponseWriter, r *http.Request) {
 	socketServer.OnConnect("/socketio", func(s socketio.Conn) error {
 		s.SetContext("")
 		log.Println("Connected:", s.ID())
@@ -78,5 +80,6 @@ func wsHandler(c *gin.Context) {
 		log.Println("closed", msg)
 	})
 
-	socketServer.ServeHTTP(c.Writer, c.Request)
+	go socketServer.Serve()
+	defer socketServer.Close()
 }
