@@ -76,7 +76,7 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/hello", hello)
 	router.HandleFunc("/test", test)
-	router.HandleFunc("/person/{name}", person)
+	router.HandleFunc("/person/{name}", person).Methods("GET")
 	router.Handle("/", socketServer)
 
 	log.Println("Serving at localhost:12379...")
