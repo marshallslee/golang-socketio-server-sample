@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/googollee/go-socket.io"
 	"log"
+	"net/http"
 	"os"
 )
 
@@ -76,5 +77,6 @@ func main() {
 	router.GET("/test", test)
 	router.GET("/person/:name", person)
 	router.GET("/", gin.WrapH(socketServer))
-	router.Run(":12379")
+
+	log.Fatal(http.ListenAndServe(":12374", router))
 }
