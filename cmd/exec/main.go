@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/googollee/go-socket.io"
 	"log"
-	"net/http"
 	"os"
 )
 
@@ -51,22 +50,22 @@ func person(c *gin.Context) {
 func main() {
 	defer logFile.Close()
 
-	socketServer.OnConnect("/", func(s socketio.Conn) error {
+	socketServer.OnConnect("/socketio", func(s socketio.Conn) error {
 		s.SetContext("")
 		log.Println("Connected:", s.ID())
 		return nil
 	})
 
-	socketServer.OnEvent("/", "name_event", func(s socketio.Conn, p PersonInfo) {
+	socketServer.OnEvent("/socketio", "name_event", func(s socketio.Conn, p PersonInfo) {
 		log.Println("First name:", p.FirstName)
 		log.Println("Last name:", p.LastName)
 	})
 
-	socketServer.OnError("/", func(e error) {
+	socketServer.OnError("/socketio", func(e error) {
 		log.Println("meet error:", e)
 	})
 
-	socketServer.OnDisconnect("/", func(s socketio.Conn, msg string) {
+	socketServer.OnDisconnect("/socketio", func(s socketio.Conn, msg string) {
 		log.Println("closed", msg)
 	})
 
@@ -76,6 +75,6 @@ func main() {
 	router.GET("/hello", hello)
 	router.GET("/test", test)
 	router.GET("/person/:name", person)
-	router.GET("/socketio", gin.WrapH(socketServer))
+	router.GET("/", gin.WrapH(socketServer))
 	router.Run(":12379")
 }
