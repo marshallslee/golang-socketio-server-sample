@@ -22,7 +22,7 @@ func name(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	name := params["name"]
 	fmt.Fprintf(w, "My name is %s", name)
-	log.Println("Hello from HTTP request.")
+	log.Printf("My name is %s\n", name)
 }
 
 func main() {
