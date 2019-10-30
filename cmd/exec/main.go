@@ -65,11 +65,12 @@ func main() {
 	go server.Serve()
 	defer server.Close()
 
-	http.HandleFunc("/hello", hello)
-	http.HandleFunc("/test", test)
-	http.HandleFunc("/person/{name}", name)
-	http.Handle("/", server)
+	router := http.NewServeMux()
+	router.HandleFunc("/hello", hello)
+	router.HandleFunc("/test", test)
+	router.HandleFunc("/person/{name}", name)
+	router.Handle("/", server)
 
 	log.Println("Serving at localhost:12379...")
-	log.Fatal(http.ListenAndServe(":12379", nil))
+	log.Fatal(http.ListenAndServe(":12379", router))
 }
