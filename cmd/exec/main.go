@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/googollee/go-socket.io"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
@@ -19,10 +18,15 @@ func hello(w http.ResponseWriter, r *http.Request) {
 }
 
 func name(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	name := params["name"]
-	fmt.Fprintf(w, "My name is %s\n", name)
-	log.Printf("My name is %s\n", name)
+	if r.Method == "GET" {
+		if err := r.ParseForm(); err != nil {
+			log.Println(err.Error())
+		}
+		name := r.Form.Get("name")
+
+		fmt.Fprintf(w, "My name is %s\n", name)
+		log.Printf("My name is %s\n", name)
+	}
 }
 
 func main() {
