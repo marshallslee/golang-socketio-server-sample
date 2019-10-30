@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	router       = gin.New()
+	router       = gin.Default()
 	logFile      *os.File
 	socketServer *socketio.Server
 )
@@ -79,7 +79,7 @@ func main() {
 	router.GET("/test", test)
 	router.GET("/person/{name}", person)
 	router.GET("/", gin.WrapF(socketHandler))
+	router.Run(":12379")
 
 	log.Println("Serving at localhost:12379...")
-	log.Fatal(http.ListenAndServe(":12379", router))
 }
