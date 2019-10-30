@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/googollee/go-socket.io"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
@@ -59,6 +60,13 @@ func main() {
 	defer socketServer.Close()
 
 	http.Handle("/", socketServer)
+	http.HandleFunc("/name/:name", name)
 
 	log.Fatal(http.ListenAndServe(":12379", nil))
+}
+
+func name(w http.ResponseWriter, r *http.Request) {
+	param := mux.Vars(r)
+	name := param["name"]
+	log.Printf("My name is %s\n", name)
 }
