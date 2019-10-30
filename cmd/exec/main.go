@@ -73,11 +73,7 @@ func main() {
 	go socketServer.Serve()
 	defer socketServer.Close()
 
-	router.GET("/hello", hello)
-	router.GET("/test", test)
-	router.GET("/person/:name", person)
 	http.Handle("/", socketServer)
 
-	router.Run(":12379")
 	log.Fatal(http.ListenAndServe(":12379", nil))
 }
