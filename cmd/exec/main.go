@@ -17,16 +17,13 @@ func hello(w http.ResponseWriter, r *http.Request) {
 	log.Println("Hello from HTTP request.")
 }
 
-func name(w http.ResponseWriter, r *http.Request) {
-	log.Println("Name is called.")
-	if r.Method == "GET" {
-		if err := r.ParseForm(); err != nil {
-			log.Println(err.Error())
-		}
-		name := r.Form.Get("name")
+func test(w http.ResponseWriter, r *http.Request) {
+	log.Println("Testing..")
+}
 
-		fmt.Fprintf(w, "My name is %s\n", name)
-		log.Printf("My name is %s\n", name)
+func name(w http.ResponseWriter, r *http.Request) {
+	for k, v := range r.URL.Query() {
+		fmt.Printf("%s: %s\n", k, v)
 	}
 }
 
@@ -69,6 +66,7 @@ func main() {
 	defer server.Close()
 
 	http.HandleFunc("/hello", hello)
+	http.HandleFunc("/test", test)
 	http.HandleFunc("/person/{name}", name)
 	http.Handle("/", server)
 
