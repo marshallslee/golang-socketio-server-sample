@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"github.com/googollee/go-socket.io"
 	"log"
 	"net/http"
@@ -9,7 +8,6 @@ import (
 )
 
 var (
-	router       = gin.Default()
 	logFile      *os.File
 	socketServer *socketio.Server
 )
@@ -33,19 +31,6 @@ func init() {
 type PersonInfo struct {
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
-}
-
-func hello(c *gin.Context) {
-	log.Println("Hello from HTTP request.")
-}
-
-func test(c *gin.Context) {
-	log.Println("Testing..")
-}
-
-func person(c *gin.Context) {
-	name := c.Param("name")
-	log.Printf("My name is %s\n", name)
 }
 
 func main() {
