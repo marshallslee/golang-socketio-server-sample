@@ -39,6 +39,7 @@ func hello(w http.ResponseWriter, r *http.Request) {
 }
 
 func test(w http.ResponseWriter, r *http.Request) {
+	log.Println(r.Method)
 	log.Println("Testing..")
 }
 
