@@ -55,7 +55,7 @@ func main() {
 	defer server.Close()
 
 	http.HandleFunc("/hello", hello)
-	http.Handle("/", server)
+	http.Handle("/socketio", server)
 
 	log.Println("Serving at localhost:12379...")
 	log.Fatal(http.ListenAndServe(":12379", nil))
