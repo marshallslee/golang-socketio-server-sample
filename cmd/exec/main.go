@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-type person struct {
+type PersonInfo struct {
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 }
@@ -21,10 +21,9 @@ func test(w http.ResponseWriter, r *http.Request) {
 	log.Println("Testing..")
 }
 
-func name(w http.ResponseWriter, r *http.Request) {
-	for k, v := range r.URL.Query() {
-		fmt.Printf("%s: %s\n", k, v)
-	}
+func person(w http.ResponseWriter, r *http.Request) {
+	name := r.FormValue("name")
+	log.Printf("My name is %s\n", name)
 }
 
 func main() {
@@ -49,7 +48,7 @@ func main() {
 		return nil
 	})
 
-	server.OnEvent("/socketio", "name_event", func(s socketio.Conn, p person) {
+	server.OnEvent("/socketio", "name_event", func(s socketio.Conn, p PersonInfo) {
 		log.Println("First name:", p.FirstName)
 		log.Println("Last name:", p.LastName)
 	})
@@ -68,7 +67,7 @@ func main() {
 	router := http.NewServeMux()
 	router.HandleFunc("/hello", hello)
 	router.HandleFunc("/test", test)
-	router.HandleFunc("/person/{name}", name)
+	router.HandleFunc("/person", person)
 	router.Handle("/", server)
 
 	log.Println("Serving at localhost:12379...")
