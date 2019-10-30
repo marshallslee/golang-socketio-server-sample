@@ -48,7 +48,9 @@ func person(c *gin.Context) {
 	log.Printf("My name is %s\n", name)
 }
 
-func socketHandler(c *gin.Context) {
+func main() {
+	defer logFile.Close()
+
 	socketServer.OnConnect("/socketio", func(s socketio.Conn) error {
 		s.SetContext("")
 		log.Println("Connected:", s.ID())
@@ -70,14 +72,10 @@ func socketHandler(c *gin.Context) {
 
 	go socketServer.Serve()
 	defer socketServer.Close()
-}
-
-func main() {
-	defer logFile.Close()
 
 	router.GET("/hello", hello)
 	router.GET("/test", test)
 	router.GET("/person/:name", person)
-	router.GET("/", socketHandler)
+	router.GET("/", gin.WrapH(socketServer))
 	router.Run(":12379")
 }
