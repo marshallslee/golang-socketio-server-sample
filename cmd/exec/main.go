@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/googollee/go-socket.io"
 	"github.com/gorilla/mux"
 	"log"
@@ -58,12 +57,6 @@ func main() {
 
 	router := mux.NewRouter()
 	router.HandleFunc("/hello", hello).Methods("GET")
-	router.HandleFunc("/person/{name}", func(w http.ResponseWriter, r *http.Request) {
-		params := mux.Vars(r)
-		name := params["name"]
-		fmt.Fprintf(w, "My name is %s", name)
-		log.Printf("My name is %s\n", name)
-	}).Methods("GET")
 	router.Handle("/", server)
 
 	log.Println("Serving at localhost:12379...")
