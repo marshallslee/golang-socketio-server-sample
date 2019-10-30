@@ -76,7 +76,7 @@ func main() {
 	router.GET("/hello", hello)
 	router.GET("/test", test)
 	router.GET("/person/:name", person)
-	router.Handle("WS", "/", wsHandler)
+	router.Handle("WS", "/socket.io", wsHandler)
 
 	router.Run(":12379")
 }
