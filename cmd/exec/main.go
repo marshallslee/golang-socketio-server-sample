@@ -47,32 +47,36 @@ func person(c *gin.Context) {
 	log.Printf("My name is %s\n", name)
 }
 
+func wsHandler(c *gin.Context) {
+	socketServer.OnConnect("/socketio", func(s socketio.Conn) error {
+		s.SetContext("")
+		log.Println("Connected:", s.ID())
+		return nil
+	})
+
+	socketServer.OnEvent("/socketio", "name_event", func(s socketio.Conn, p PersonInfo) {
+		log.Println("First name:", p.FirstName)
+		log.Println("Last name:", p.LastName)
+	})
+
+	socketServer.OnError("/socketio", func(e error) {
+		log.Println("meet error:", e)
+	})
+
+	socketServer.OnDisconnect("/socketio", func(s socketio.Conn, msg string) {
+		log.Println("closed", msg)
+	})
+
+	socketServer.ServeHTTP(c.Writer, c.Request)
+}
+
 func main() {
 	defer logFile.Close()
 
-	router.GET("/", func(c *gin.Context) {
-		socketServer.OnConnect("/socketio", func(s socketio.Conn) error {
-			s.SetContext("")
-			log.Println("Connected:", s.ID())
-			return nil
-		})
-
-		socketServer.OnEvent("/socketio", "name_event", func(s socketio.Conn, p PersonInfo) {
-			log.Println("First name:", p.FirstName)
-			log.Println("Last name:", p.LastName)
-		})
-
-		socketServer.OnError("/socketio", func(e error) {
-			log.Println("meet error:", e)
-		})
-
-		socketServer.OnDisconnect("/socketio", func(s socketio.Conn, msg string) {
-			log.Println("closed", msg)
-		})
-
-		go socketServer.Serve()
-		defer socketServer.Close()
-	})
+	router.GET("/hello", hello)
+	router.GET("/test", test)
+	router.GET("/person/:name", person)
+	router.Handle("WS", "/", wsHandler)
 
 	router.Run(":12379")
 }
