@@ -48,7 +48,7 @@ func person(c *gin.Context) {
 	log.Printf("My name is %s\n", name)
 }
 
-func socketHandler(w http.ResponseWriter, r *http.Request) {
+func socketHandler(c *gin.Context) {
 	socketServer.OnConnect("/socketio", func(s socketio.Conn) error {
 		s.SetContext("")
 		log.Println("Connected:", s.ID())
@@ -78,8 +78,6 @@ func main() {
 	router.GET("/hello", hello)
 	router.GET("/test", test)
 	router.GET("/person/:name", person)
-	router.GET("/", gin.WrapF(socketHandler))
+	router.GET("/", socketHandler)
 	router.Run(":12379")
-
-	log.Println("Serving at localhost:12379...")
 }
