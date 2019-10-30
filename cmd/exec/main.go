@@ -43,7 +43,8 @@ func test(w http.ResponseWriter, r *http.Request) {
 }
 
 func person(w http.ResponseWriter, r *http.Request) {
-	name := r.FormValue("name")
+	param := mux.Vars(r)
+	name := param["name"]
 	log.Printf("My name is %s\n", name)
 }
 
