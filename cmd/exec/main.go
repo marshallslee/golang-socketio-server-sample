@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/googollee/go-socket.io"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
@@ -34,24 +34,20 @@ type PersonInfo struct {
 	LastName  string `json:"last_name"`
 }
 
-func hello(w http.ResponseWriter, r *http.Request) {
+func hello(c *gin.Context) {
 	log.Println("Hello from HTTP request.")
 }
 
-func test(w http.ResponseWriter, r *http.Request) {
-	log.Println(r.Method)
+func test(c *gin.Context) {
 	log.Println("Testing..")
 }
 
-func person(w http.ResponseWriter, r *http.Request) {
-	param := mux.Vars(r)
-	name := param["name"]
+func person(c *gin.Context) {
+	name := c.Param("name")
 	log.Printf("My name is %s\n", name)
 }
 
-func main() {
-	defer logFile.Close()
-
+func socketHandler(c *gin.Context) {
 	socketServer.OnConnect("/socketio", func(s socketio.Conn) error {
 		s.SetContext("")
 		log.Println("Connected:", s.ID())
@@ -73,12 +69,16 @@ func main() {
 
 	go socketServer.Serve()
 	defer socketServer.Close()
+}
 
-	router := mux.NewRouter()
-	router.HandleFunc("/hello", hello)
-	router.HandleFunc("/test", test)
-	router.HandleFunc("/person/{name}", person).Methods("GET")
-	http.Handle("/", socketServer)
+func main() {
+	defer logFile.Close()
+
+	router := gin.Default()
+	router.GET("/hello", hello)
+	router.GET("/test", test)
+	router.GET("/person/{name}", person)
+	router.GET("/", socketHandler)
 
 	log.Println("Serving at localhost:12379...")
 	log.Fatal(http.ListenAndServe(":12379", router))
