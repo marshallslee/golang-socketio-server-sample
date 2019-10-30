@@ -32,22 +32,22 @@ func main() {
 		log.Fatal(err)
 	}
 
-	server.OnConnect("/", func(s socketio.Conn) error {
+	server.OnConnect("/socketio", func(s socketio.Conn) error {
 		s.SetContext("")
 		log.Println("Connected:", s.ID())
 		return nil
 	})
 
-	server.OnEvent("/", "name_event", func(s socketio.Conn, p person) {
+	server.OnEvent("/socketio", "name_event", func(s socketio.Conn, p person) {
 		log.Println("First name:", p.FirstName)
 		log.Println("Last name:", p.LastName)
 	})
 
-	server.OnError("/", func(e error) {
+	server.OnError("/socketio", func(e error) {
 		log.Println("meet error:", e)
 	})
 
-	server.OnDisconnect("/", func(s socketio.Conn, msg string) {
+	server.OnDisconnect("/socketio", func(s socketio.Conn, msg string) {
 		log.Println("closed", msg)
 	})
 
