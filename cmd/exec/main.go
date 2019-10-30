@@ -47,6 +47,17 @@ func person(c *gin.Context) {
 	log.Printf("My name is %s\n", name)
 }
 
+func main() {
+	defer logFile.Close()
+
+	router.GET("/hello", hello)
+	router.GET("/test", test)
+	router.GET("/person/:name", person)
+	router.GET("/socketio", wsHandler)
+
+	router.Run(":12379")
+}
+
 func wsHandler(c *gin.Context) {
 	socketServer.OnConnect("/socketio", func(s socketio.Conn) error {
 		s.SetContext("")
@@ -68,15 +79,4 @@ func wsHandler(c *gin.Context) {
 	})
 
 	socketServer.ServeHTTP(c.Writer, c.Request)
-}
-
-func main() {
-	defer logFile.Close()
-
-	router.GET("/hello", hello)
-	router.GET("/test", test)
-	router.GET("/person/:name", person)
-	router.Handle("WS", "/socket.io", wsHandler)
-
-	router.Run(":12379")
 }
