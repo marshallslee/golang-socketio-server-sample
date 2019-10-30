@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/googollee/go-socket.io"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
@@ -18,12 +19,8 @@ func hello(w http.ResponseWriter, r *http.Request) {
 }
 
 func name(w http.ResponseWriter, r *http.Request) {
-	nameQuery, ok := r.URL.Query()["name"]
-	if !ok || len(nameQuery[0]) < 1 {
-		log.Println("URL param 'key' is missing.")
-	}
-	log.Printf("%v", nameQuery)
-	name := nameQuery[0]
+	params := mux.Vars(r)
+	name := params["name"]
 	fmt.Fprintf(w, "My name is %s\n", name)
 	log.Printf("My name is %s\n", name)
 }
