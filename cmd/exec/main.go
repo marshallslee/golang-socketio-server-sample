@@ -77,7 +77,7 @@ func main() {
 
 	router.GET("/hello", hello)
 	router.GET("/test", test)
-	router.GET("/person/{name}", person)
+	router.GET("/person/:name", person)
 	router.GET("/", gin.WrapF(socketHandler))
 	router.Run(":12379")
 
