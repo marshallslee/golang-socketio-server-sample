@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"github.com/googollee/go-socket.io"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
@@ -34,20 +34,21 @@ type PersonInfo struct {
 	LastName  string `json:"last_name"`
 }
 
-func hello(c *gin.Context) {
+func hello(w http.ResponseWriter, r *http.Request) {
 	log.Println("Hello from HTTP request.")
 }
 
-func test(c *gin.Context) {
+func test(w http.ResponseWriter, r *http.Request) {
 	log.Println("Testing..")
 }
 
-func person(c *gin.Context) {
-	name := c.Param("name")
+func person(w http.ResponseWriter, r *http.Request) {
+	param := mux.Vars(r)
+	name := param["name"]
 	log.Printf("My name is %s\n", name)
 }
 
-func socketHandler(c *gin.Context) {
+func socketHandler(w http.ResponseWriter, r *http.Request) {
 	socketServer.OnConnect("/socketio", func(s socketio.Conn) error {
 		s.SetContext("")
 		log.Println("Connected:", s.ID())
@@ -67,17 +68,17 @@ func socketHandler(c *gin.Context) {
 		log.Println("closed", msg)
 	})
 
-	socketServer.ServeHTTP(c.Writer, c.Request)
+	socketServer.ServeHTTP(w, r)
 }
 
 func main() {
 	defer logFile.Close()
 
-	router := gin.Default()
-	router.GET("/hello", hello)
-	router.GET("/test", test)
-	router.GET("/person/{name}", person)
-	router.GET("/", socketHandler)
+	router := mux.NewRouter()
+	router.HandleFunc("/hello", hello)
+	router.HandleFunc("/test", test)
+	router.HandleFunc("/person/{name}", person)
+	router.HandleFunc("/", socketHandler)
 
 	log.Println("Serving at localhost:12379...")
 	log.Fatal(http.ListenAndServe(":12379", router))

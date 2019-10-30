@@ -8,8 +8,8 @@ ADD cmd/exec /app/cmd/exec
 WORKDIR /app/cmd/exec
 COPY . .
 
-RUN go get -t github.com/gin-gonic/gin
 RUN go get -t github.com/googollee/go-socket.io
+RUN go get -t github.com/gorilla/mux
 
 EXPOSE 12379
 
