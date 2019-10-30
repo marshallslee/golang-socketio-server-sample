@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/googollee/go-socket.io"
 	"log"
 	"net/http"
@@ -14,6 +15,17 @@ type person struct {
 
 func hello(w http.ResponseWriter, r *http.Request) {
 	log.Println("Hello from HTTP request.")
+}
+
+func name(w http.ResponseWriter, r *http.Request) {
+	nameQuery, ok := r.URL.Query()["name"]
+	if !ok || len(nameQuery[0]) < 1 {
+		log.Println("URL param 'key' is missing.")
+	}
+	log.Printf("%v", nameQuery)
+	name := nameQuery[0]
+	fmt.Fprintf(w, "My name is %s\n", name)
+	log.Printf("My name is %s\n", name)
 }
 
 func main() {
@@ -55,6 +67,7 @@ func main() {
 	defer server.Close()
 
 	http.HandleFunc("/hello", hello)
+	http.HandleFunc("/person/{name}", name)
 	http.Handle("/", server)
 
 	log.Println("Serving at localhost:12379...")
