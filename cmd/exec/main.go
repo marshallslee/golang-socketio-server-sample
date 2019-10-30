@@ -78,7 +78,7 @@ func main() {
 	router.HandleFunc("/hello", hello)
 	router.HandleFunc("/test", test)
 	router.HandleFunc("/person/{name}", person).Methods("GET")
-	router.Handle("/", socketServer)
+	http.Handle("/", socketServer)
 
 	log.Println("Serving at localhost:12379...")
 	log.Fatal(http.ListenAndServe(":12379", router))
