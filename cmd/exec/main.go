@@ -51,22 +51,22 @@ func person(c *gin.Context) {
 func main() {
 	defer logFile.Close()
 
-	socketServer.OnConnect("/socketio", func(s socketio.Conn) error {
+	socketServer.OnConnect("/socket.io", func(s socketio.Conn) error {
 		s.SetContext("")
 		log.Println("Connected:", s.ID())
 		return nil
 	})
 
-	socketServer.OnEvent("/socketio", "name_event", func(s socketio.Conn, p PersonInfo) {
+	socketServer.OnEvent("/socket.io", "name_event", func(s socketio.Conn, p PersonInfo) {
 		log.Println("First name:", p.FirstName)
 		log.Println("Last name:", p.LastName)
 	})
 
-	socketServer.OnError("/socketio", func(e error) {
+	socketServer.OnError("/socket.io", func(e error) {
 		log.Println("meet error:", e)
 	})
 
-	socketServer.OnDisconnect("/socketio", func(s socketio.Conn, msg string) {
+	socketServer.OnDisconnect("/socket.io", func(s socketio.Conn, msg string) {
 		log.Println("closed", msg)
 	})
 
