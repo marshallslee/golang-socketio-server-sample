@@ -51,16 +51,6 @@ func person(c *gin.Context) {
 func main() {
 	defer logFile.Close()
 
-	router.GET("/hello", hello)
-	router.GET("/test", test)
-	router.GET("/person/:name", person)
-	http.HandleFunc("/", wsHandler)
-
-	router.Run(":12379")
-	log.Fatal(http.ListenAndServe(":12379", nil))
-}
-
-func wsHandler(w http.ResponseWriter, r *http.Request) {
 	socketServer.OnConnect("/socketio", func(s socketio.Conn) error {
 		s.SetContext("")
 		log.Println("Connected:", s.ID())
@@ -82,4 +72,12 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 
 	go socketServer.Serve()
 	defer socketServer.Close()
+
+	router.GET("/hello", hello)
+	router.GET("/test", test)
+	router.GET("/person/:name", person)
+	http.Handle("/", socketServer)
+
+	router.Run(":12379")
+	log.Fatal(http.ListenAndServe(":12379", nil))
 }
